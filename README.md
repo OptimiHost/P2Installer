@@ -22,5 +22,7 @@ Automatically downloads and installs dependencies, patches shell environment var
 ---
 ## How to use
 
-Just simply run `curl -fsSL https://raw.githubusercontent.com/OptimiDEV/P2Installer/refs/heads/main/main.py | python`
+Just simply run `curl -fsSL https://raw.githubusercontent.com/OptimiDEV/P2Installer/refs/heads/main/main.py | sudo python`
+
+
 That's all
