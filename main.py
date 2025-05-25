@@ -106,7 +106,7 @@ if pretty_name == "Arch Linux":
     yellow('*** Setting up patches')
     patches()
 
-elif any(name in pretty_name for name in ["Ubuntu", "Debian", "Pop!_OS"]):
+elif any(name in pretty_name for name in ["Ubuntu", "Debian", "Pop!_OS", "Linux Mint"]):
     yellow("*** You're using Debian based OS")
     yellow("*** Installing packages")
     subprocess.run(['sudo', 'apt', 'install', '-y',
