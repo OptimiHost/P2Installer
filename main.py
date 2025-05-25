@@ -105,7 +105,9 @@ if pretty_name == "Arch Linux":
     install_p2()
     yellow('*** Setting up patches')
     patches()
-
+#
+# This debian family shIt is about to kill me
+#
 elif any(name in pretty_name for name in ["Ubuntu", "Debian", "Pop!_OS", "Linux Mint"]):
     yellow("*** You're using Debian based OS")
     yellow("*** Installing packages")
