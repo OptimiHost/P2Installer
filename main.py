@@ -106,8 +106,8 @@ if pretty_name == "Arch Linux":
     yellow('*** Setting up patches')
     patches()
 
-elif "Ubuntu" in pretty_name or "Debian" in pretty_name:
-    yellow("*** You're using Ubuntu/Debian")
+elif any(name in pretty_name for name in ["Ubuntu", "Debian", "Pop!_OS"]):
+    yellow("*** You're using Ubuntu based OS")
     yellow("*** Installing packages")
     subprocess.run(['sudo', 'apt', 'install', '-y',
                     'libwebkit2gtk-4.1-dev', 'build-essential', 'curl', 'wget', 'file',
