@@ -1,5 +1,5 @@
 # Optimi's P2Installer
-
+Patches for Player2 to run it on linux
 A simple cross-distro Python installer for [Player2](https://player2.game), with support for:
 
 - Arch Linux
