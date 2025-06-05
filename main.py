@@ -17,7 +17,7 @@ if not sudo_user:
 
 home_dir = pwd.getpwnam(sudo_user).pw_dir
 pretty_name = DISTRO.get("PRETTY_NAME", "Unknown Linux")
-latest_ver_p2 = 'https://cdn.discordapp.com/attachments/1247544452294377547/1369692197229694986/Player2_0.10.3_amd64.AppImage?ex=682e9503&is=682d4383&hm=93a963ec279cc65e8dfd89981d7c1b17f382311e046ba57bb27619208f835e10&'
+latest_ver_p2 = 'http://cdn.optimihost.com/p2i/Player2.AppImage'
 appimage_filename = os.path.basename(latest_ver_p2)
 appimage_path = os.path.join(home_dir, 'player2', 'Player2.AppImage')
 YELLOW = "\033[93m"
