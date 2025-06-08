@@ -2,6 +2,8 @@
 # 🎮 Optimi's P2Installer
 
 **Run Player2 (from [player2.game](https://player2.game)) on Linux with ease.**
+*This is a 3rd party installer app, not an official Player2 product.*
+
 Optimi's P2Installer is a cross-distro Python installer that automates the setup of dependencies, environment variables, and the latest Player2.AppImage.
 
 ---
@@ -12,14 +14,14 @@ Optimi's P2Installer is a cross-distro Python installer that automates the setup
 
 * **Integrate AI companions** into games like Minecraft, offering dynamic interactions and support.
 * **Access AI APIs** for indie game developers to create custom AI-driven content.
-* **Explore and share AI mods and games**, fostering a community of creators and players .
+* **Explore and share AI mods and games**, fostering a community of creators and players.
 
 ---
 
 ## ✅ P2Installer Features
 
 * **Cross-distro support**: Works on Arch Linux, Ubuntu/Debian, Fedora, Gentoo, openSUSE, and Alpine Linux.
-* **Automated setup**: Installs necessary dependencies, patches, and downloads the latest Player2.AppImage.
+* **Automated setup**: Installs necessary dependencies, patches environment variables, and downloads the latest Player2.AppImage.
 
 ---
 
@@ -59,7 +61,6 @@ The installer script performs the following steps:
 4. **Install dependencies**: Based on the detected OS, installs necessary packages using the appropriate package manager.
 5. **Download Player2.AppImage**: Fetches the latest version of the Player2 AppImage from the official source.
 6. **Set executable permissions**: Makes the downloaded AppImage executable.
-7. **Patch shell environment**: Adds the necessary environment variable to `.bashrc` or `.zshrc` to ensure proper functionality.
 
 ---
 
@@ -68,3 +69,4 @@ The installer script performs the following steps:
 * **Uninstallation**: To remove Player2, delete the `~/player2/Player2.AppImage` file and remove the `export WEBKIT_DISABLE_DMABUF_RENDERER=1` line from your shell configuration file.
 * **Manual Updates**: The installer does not handle updates. To update Player2, re-run the installation script or manually download the latest AppImage.
 
+---
