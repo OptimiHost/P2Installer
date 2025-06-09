@@ -70,3 +70,6 @@ The installer script performs the following steps:
 * **Manual Updates**: The installer does not handle updates. To update Player2, re-run the installation script or manually download the latest AppImage.
 
 ---
+
+
+That's all
