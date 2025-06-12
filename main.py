@@ -444,8 +444,13 @@ class Player2ConsoleInstaller:
                 add_log("Setting up P2Monitor service...", 2)
                 self.setup_monitor_service(add_log)
             
+            # Create uninstaller
+            add_log("Creating uninstaller...", 2)
+            self.create_uninstaller(add_log)
+            
             add_log("Installation completed successfully!", 3)
             add_log(f"Player2 installed to: {self.appimage_path}", 6)
+            add_log("To uninstall, run: sudo p2uninstall", 5)
             add_log("Press any key to exit...", 5)
             
         except Exception as e:
@@ -735,6 +740,117 @@ WantedBy=multi-user.target
                 
         except Exception as e:
             raise Exception(f"Failed to setup monitor service: {str(e)}")
+    
+    def create_uninstaller(self, log_func):
+        """Create and set up the uninstaller script"""
+        try:
+            # Create uninstaller script content
+            uninstaller = '''#!/usr/bin/env python3
+import os
+import sys
+import shutil
+import subprocess
+import pwd
+
+def remove_player2():
+    """Remove Player2 application"""
+    sudo_user = os.environ.get("SUDO_USER")
+    if sudo_user:
+        home_dir = pwd.getpwnam(sudo_user).pw_dir
+        player2_dir = os.path.join(home_dir, "player2")
+        if os.path.exists(player2_dir):
+            shutil.rmtree(player2_dir)
+            print("✓ Removed Player2 application")
+        else:
+            print("Player2 directory not found")
+
+def remove_webkit_patches():
+    """Remove WebKit patches from shell config files"""
+    sudo_user = os.environ.get("SUDO_USER")
+    if sudo_user:
+        home_dir = pwd.getpwnam(sudo_user).pw_dir
+        shell_files = [
+            os.path.join(home_dir, ".bashrc"),
+            os.path.join(home_dir, ".zshrc")
+        ]
+        
+        for rc_file in shell_files:
+            if os.path.exists(rc_file):
+                with open(rc_file, "r") as f:
+                    lines = f.readlines()
+                
+                with open(rc_file, "w") as f:
+                    for line in lines:
+                        if "WEBKIT_DISABLE_DMABUF_RENDERER" not in line:
+                            f.write(line)
+        print("✓ Removed WebKit patches")
+
+def remove_p2monitor():
+    """Remove P2Monitor service"""
+    try:
+        subprocess.run(["systemctl", "stop", "p2monitor"], capture_output=True)
+        subprocess.run(["systemctl", "disable", "p2monitor"], capture_output=True)
+        
+        if os.path.exists("/etc/systemd/system/p2monitor.service"):
+            os.remove("/etc/systemd/system/p2monitor.service")
+        
+        if os.path.exists("/etc/p2monitor"):
+            shutil.rmtree("/etc/p2monitor")
+            
+        subprocess.run(["systemctl", "daemon-reload"], capture_output=True)
+        print("✓ Removed P2Monitor service")
+    except Exception as e:
+        print(f"Error removing P2Monitor: {e}")
+
+def main():
+    if os.geteuid() != 0:
+        print("This script must be run with sudo privileges.")
+        print("Please run: sudo p2uninstall")
+        sys.exit(1)
+
+    print("P2Installer Uninstaller")
+    print("----------------------")
+    print("Select components to remove:")
+    print("1. Player2 Application")
+    print("2. WebKit Patches")
+    print("3. P2Monitor Service")
+    print("4. All Components")
+    print("5. Cancel")
+    
+    choice = input("Enter your choice (1-5): ")
+    
+    if choice == "1":
+        remove_player2()
+    elif choice == "2":
+        remove_webkit_patches()
+    elif choice == "3":
+        remove_p2monitor()
+    elif choice == "4":
+        remove_player2()
+        remove_webkit_patches()
+        remove_p2monitor()
+    elif choice == "5":
+        print("Uninstallation cancelled.")
+        sys.exit(0)
+    else:
+        print("Invalid choice")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
+'''
+
+            # Create uninstaller script
+            script_path = "/usr/local/bin/p2uninstall"
+            with open(script_path, "w") as f:
+                f.write(uninstaller)
+            
+            # Make executable
+            os.chmod(script_path, 0o755)
+            log_func("Created uninstaller script: p2uninstall", 3)
+
+        except Exception as e:
+            raise Exception(f"Failed to create uninstaller: {str(e)}")
 
 def main():
     try:
