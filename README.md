@@ -38,7 +38,7 @@ Optimi's P2Installer is a cross-distro Python installer that automates the setup
 Run the following command to install Player2:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/OptimiDEV/P2Installer/main/main.py | sudo python3
+bash -c 'curl -fsSL https://raw.githubusercontent.com/OptimiDEV/P2Installer/main/main.py -o /tmp/p2installer.py && sudo python3 /tmp/p2installer.py'
 ```
 
 This script will:
