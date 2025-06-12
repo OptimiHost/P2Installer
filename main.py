@@ -26,7 +26,7 @@ class Player2ConsoleInstaller:
         if not self.check_sudo():
             self.logger.error("This installer must be run with sudo privileges.")
             print("This installer must be run with sudo privileges.")
-            print("Please run: sudo python3 installer_gui.py")
+            print("Please run: bash -c 'curl -fsSL https://raw.githubusercontent.com/OptimiDEV/P2Installer/main/main.py -o /tmp/p2installer.py && sudo python3 /tmp/p2installer.py'")
             sys.exit(1)
             
         # Get system info
