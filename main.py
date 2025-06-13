@@ -530,7 +530,7 @@ class Player2ConsoleInstaller:
                    'webkit2gtk-4.1', 'base-devel', 'curl', 'wget',
                    'file', 'openssl', 'appmenu-gtk-module',
                    'libappindicator-gtk3', 'librsvg']
-        elif any(name in self.pretty_name for name in ["Ubuntu", "Debian", "Pop!_OS", "Linux Mint"]):
+        elif any(name in self.pretty_name for name in ["Ubuntu", "Debian", "Pop!_OS", "Linux Mint", "Kali Linux"]):
             log_func("Detected Debian-based OS")
             subprocess.run(['apt', 'update'], capture_output=True)
             cmd = ['apt', 'install', '-y',
