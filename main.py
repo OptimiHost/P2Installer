@@ -524,7 +524,7 @@ class Player2ConsoleInstaller:
         """Install system packages based on distribution"""
         self.logger.info(f"Installing packages for {self.pretty_name}")
         
-        if "Arch" in self.pretty_name:
+        if "Arch" or "EndeavourOS" in self.pretty_name:
             log_func("Detected Arch Linux")
             cmd = ['pacman', '-S', '--needed', '--noconfirm',
                    'webkit2gtk-4.1', 'base-devel', 'curl', 'wget',
