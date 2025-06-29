@@ -42,7 +42,7 @@ class Player2ConsoleInstaller:
             self.home_dir = os.path.expanduser("~")
             
         self.pretty_name = self.distro.get("PRETTY_NAME", "Unknown Linux")
-        self.latest_ver_p2 = 'http://cdn.optimihost.com/p2i/Player2.AppImage'
+        self.latest_ver_p2 = 'https://downloadclient.player2.game/linux/player2.AppImage'
         self.appimage_path = os.path.join(self.home_dir, 'player2', 'Player2.AppImage')
         
         # Installation options
