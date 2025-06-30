@@ -201,7 +201,7 @@ class Player2ConsoleInstaller:
         # Version and info
         info_y = logo_y + len(logo) + 1
         info_lines = [
-            "P2Installer Script v3.0",
+            "P2Installer Script v3.1",
             "Requires Root Access",
             "",
             "This script patches and installes Player2 on Linux.",
@@ -536,8 +536,8 @@ class Player2ConsoleInstaller:
             cmd = ['apt', 'install', '-y',
                    'libwebkit2gtk-4.1-dev', 'build-essential', 'curl', 'wget', 'file',
                    'libxdo-dev', 'libssl-dev', 'libayatana-appindicator3-dev', 'librsvg2-dev']
-        elif "Fedora" or "Bazzite" in self.pretty_name:
-            log_func("Detected Fedora")
+        elif "Fedora" or "Bazzite 42 (FROM Fedora Silverblue)" in self.pretty_name:
+            log_func("Detected Fedora based OS")
             cmd = ['dnf', 'install', '-y',
                    'webkit2gtk4.1-devel', 'openssl-devel', 'curl', 'wget', 'file',
                    'libappindicator-gtk3-devel', 'librsvg2-devel']
