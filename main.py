@@ -536,7 +536,7 @@ class Player2ConsoleInstaller:
             cmd = ['apt', 'install', '-y',
                    'libwebkit2gtk-4.1-dev', 'build-essential', 'curl', 'wget', 'file',
                    'libxdo-dev', 'libssl-dev', 'libayatana-appindicator3-dev', 'librsvg2-dev']
-        elif any(name in self.pretty_name for name in ["Fedora", "Bazzite 42 (FROM Fedora Silverblue)"]:
+        elif any(name in self.pretty_name for name in ["Fedora", "Bazzite 42 (FROM Fedora Silverblue)"]):
             log_func("Detected Fedora based OS")
             cmd = ['dnf', 'install', '-y',
                    'webkit2gtk4.1-devel', 'openssl-devel', 'curl', 'wget', 'file',
