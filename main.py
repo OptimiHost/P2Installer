@@ -29,19 +29,12 @@ class Player2ConsoleInstaller:
             print("Please run: bash -c 'curl -fsSL https://raw.githubusercontent.com/OptimiDEV/P2Installer/main/main.py -o /tmp/p2installer.py && sudo python3 /tmp/p2installer.py'")
             sys.exit(1)
             
-        # Get system info
-        try:
-            self.distro = platform.freedesktop_os_release()
-        except:
-            self.distro = {"PRETTY_NAME": "Unknown Linux"}
-            
-        self.sudo_user = os.environ.get("SUDO_USER")
+        self.pretty_name = "Zedtlitz Valley Bridge"
+
         if self.sudo_user:
             self.home_dir = pwd.getpwnam(self.sudo_user).pw_dir
         else:
             self.home_dir = os.path.expanduser("~")
-            
-        self.pretty_name = self.distro.get("PRETTY_NAME", "Unknown Linux")
         self.latest_ver_p2 = 'https://downloadclient.player2.game/linux/player2.AppImage'
         self.appimage_path = os.path.join(self.home_dir, 'player2', 'Player2.AppImage')
         
@@ -93,8 +86,10 @@ class Player2ConsoleInstaller:
         
         # Show screens in sequence
         if self.show_intro_screen():
-            if self.show_addons_screen():
-                self.show_installation_screen()
+            if self.show_distro_selection_screen():
+                if self.show_addons_screen():
+                    self.show_installation_screen()
+
         
         # Wait for final key press
         self.stdscr.addstr(self.stdscr.getmaxyx()[0] - 1, 0, "Press any key to exit...")
@@ -226,7 +221,53 @@ class Player2ConsoleInstaller:
                 return True
             elif key == ord('q') or key == ord('Q'):
                 return False
+                
+    def show_distro_selection_screen(self):
+        """Prompt user to select their distro manually"""
+        self.stdscr.clear()
+        h, w = self.stdscr.getmaxyx()
     
+        # Define distro choices
+        distros = [
+            "Arch Linux / Manjaro",
+            "Debian / Ubuntu",
+            "Fedora",
+            "openSUSE",
+            "Other (Generic)"
+        ]
+        selected = 0
+    
+        box_width = min(70, w - 4)
+        box_height = min(len(distros) + 8, h - 4)
+        box_x = (w - box_width) // 2
+        box_y = (h - box_height) // 2
+    
+        while True:
+            self.stdscr.clear()
+            self.draw_box(box_y, box_x, box_height, box_width, "Select Your Linux Distro")
+    
+            self.safe_addstr(box_y + 2, box_x + 4, "Use UP/DOWN arrows to select your distro.", self.get_color(6))
+            self.safe_addstr(box_y + 3, box_x + 4, "Press ENTER to confirm.", self.get_color(6))
+    
+            for i, name in enumerate(distros):
+                y = box_y + 5 + i
+                prefix = "➤ " if i == selected else "  "
+                color = self.get_color(2 if i == selected else 6)
+                self.safe_addstr(y, box_x + 6, f"{prefix}{name}", color)
+    
+            self.stdscr.refresh()
+            key = self.stdscr.getch()
+    
+            if key == curses.KEY_UP and selected > 0:
+                selected -= 1
+            elif key == curses.KEY_DOWN and selected < len(distros) - 1:
+                selected += 1
+            elif key in (ord('\n'), ord('\r'), 10):
+                self.pretty_name = distros[selected]
+                return True
+            elif key in (ord('q'), ord('Q')):
+                return False
+
     def show_addons_screen(self):
         """Show addons selection screen"""
         self.stdscr.clear()
