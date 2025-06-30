@@ -75,8 +75,7 @@
 <h2>🛡️ Notes &amp; Cleanup</h2>
 
 <ul>
-  <li><strong>Uninstallation</strong>: To remove Player2, delete the <code>~/player2/Player2.AppImage</code> file and remove the <code>export WEBKIT_DISABLE_DMABUF_RENDERER=1</code> line from your shell configuration file.</li>
-  <li><strong>Manual Updates</strong>: The installer does not handle updates. To update Player2, re-run the installation script or manually download the latest AppImage.</li>
+  <li><strong>Uninstallation</strong>: To remove Player2, use <code>sudo p2uninstall</code>
 </ul>
 
 <hr>
