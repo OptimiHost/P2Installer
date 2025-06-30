@@ -22,6 +22,9 @@ class Player2ConsoleInstaller:
         # Setup logging
         self.setup_logging()
         
+        # Get sudo user
+        self.sudo_user = os.environ.get('SUDO_USER')
+        
         # Check sudo privileges first
         if not self.check_sudo():
             self.logger.error("This installer must be run with sudo privileges.")
