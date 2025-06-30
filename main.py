@@ -29,7 +29,7 @@ class Player2ConsoleInstaller:
             print("Please run: bash -c 'curl -fsSL https://raw.githubusercontent.com/OptimiDEV/P2Installer/main/main.py -o /tmp/p2installer.py && sudo python3 /tmp/p2installer.py'")
             sys.exit(1)
             
-        self.pretty_name = "Zedtlitz Valley Bridge"
+        self.pretty_name = "UwUntu"
 
         if self.sudo_user:
             self.home_dir = pwd.getpwnam(self.sudo_user).pw_dir
