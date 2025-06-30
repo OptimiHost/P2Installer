@@ -19,12 +19,9 @@ from datetime import datetime
 
 class Player2ConsoleInstaller:
     def __init__(self):
+        self.sudo_user = os.environ.get('SUDO_USER')
         # Setup logging
         self.setup_logging()
-        
-        # Get sudo user
-        self.sudo_user = os.environ.get('SUDO_USER')
-        
         # Check sudo privileges first
         if not self.check_sudo():
             self.logger.error("This installer must be run with sudo privileges.")
