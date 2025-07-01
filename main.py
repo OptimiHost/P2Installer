@@ -28,7 +28,9 @@ class Player2ConsoleInstaller:
             print("This installer must be run with sudo privileges.")
             print("Please run: bash -c 'curl -fsSL https://raw.githubusercontent.com/OptimiDEV/P2Installer/main/main.py -o /tmp/p2installer.py && sudo python3 /tmp/p2installer.py'")
             sys.exit(1)
-            
+
+        
+        self.distros = ["Arch-based(Like EndeavourOS)","Fedora-based(Like Endeavour)", "Debian(Like Zorin or Ubuntu)"]
         self.pretty_name = "UwUntu"
 
         if self.sudo_user:
