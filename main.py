@@ -265,7 +265,7 @@ class Player2ConsoleInstaller:
             elif key == curses.KEY_DOWN and selected < len(distros) - 1:
                 selected += 1
             elif key == ord('\n'):
-                self.pretty_name = self.distros[self.highlighted_distro]  # ✅ store in pretty_name
+                self.pretty_name = self.distros[self.highlighted_distro]
                 self.current_screen = 'installing'
                 self.installing = True
                 self.install_thread = threading.Thread(target=self.run_installation)
