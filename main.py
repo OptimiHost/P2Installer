@@ -29,9 +29,15 @@ class Player2ConsoleInstaller:
             print("Please run: bash -c 'curl -fsSL https://raw.githubusercontent.com/OptimiDEV/P2Installer/main/main.py -o /tmp/p2installer.py && sudo python3 /tmp/p2installer.py'")
             sys.exit(1)
 
-        
-        self.distros = ["Arch-based(Like EndeavourOS)","Fedora-based(Like Endeavour)", "Debian(Like Zorin or Ubuntu)"]
-        self.pretty_name = "UwUntu"
+        # Initialize distro list - this was missing proper initialization
+        self.distros = [
+            "Arch Linux / Manjaro",
+            "Debian / Ubuntu", 
+            "Fedora",
+            "openSUSE",
+            "Other (Generic)"
+        ]
+        self.pretty_name = "Unknown Linux Distribution"
 
         if self.sudo_user:
             self.home_dir = pwd.getpwnam(self.sudo_user).pw_dir
@@ -229,18 +235,10 @@ class Player2ConsoleInstaller:
         self.stdscr.clear()
         h, w = self.stdscr.getmaxyx()
     
-        # Define distro choices
-        distros = [
-            "Arch Linux / Manjaro",
-            "Debian / Ubuntu",
-            "Fedora",
-            "openSUSE",
-            "Other (Generic)"
-        ]
         selected = 0
     
         box_width = min(70, w - 4)
-        box_height = min(len(distros) + 8, h - 4)
+        box_height = min(len(self.distros) + 8, h - 4)
         box_x = (w - box_width) // 2
         box_y = (h - box_height) // 2
     
@@ -251,7 +249,7 @@ class Player2ConsoleInstaller:
             self.safe_addstr(box_y + 2, box_x + 4, "Use UP/DOWN arrows to select your distro.", self.get_color(6))
             self.safe_addstr(box_y + 3, box_x + 4, "Press ENTER to confirm.", self.get_color(6))
     
-            for i, name in enumerate(distros):
+            for i, name in enumerate(self.distros):
                 y = box_y + 5 + i
                 prefix = "➤ " if i == selected else "  "
                 color = self.get_color(2 if i == selected else 6)
@@ -262,15 +260,12 @@ class Player2ConsoleInstaller:
     
             if key == curses.KEY_UP and selected > 0:
                 selected -= 1
-            elif key == curses.KEY_DOWN and selected < len(distros) - 1:
+            elif key == curses.KEY_DOWN and selected < len(self.distros) - 1:
                 selected += 1
             elif key == ord('\n'):
-                self.pretty_name = self.distros[self.highlighted_distro]
-                self.current_screen = 'installing'
-                self.installing = True
-                self.install_thread = threading.Thread(target=self.run_installation)
-                self.install_thread.start()
-
+                # Set the selected distro name
+                self.pretty_name = self.distros[selected]
+                return True
             elif key in (ord('q'), ord('Q')):
                 return False
 
@@ -571,40 +566,42 @@ class Player2ConsoleInstaller:
         """Install system packages based on distribution"""
         self.logger.info(f"Installing packages for {self.pretty_name}")
         
-        if "Arch" or "EndeavourOS" in self.pretty_name:
-            log_func("Detected Arch Linux")
+        if "Arch" in self.pretty_name or "Manjaro" in self.pretty_name:
+            log_func("Detected Arch Linux/Manjaro")
             cmd = ['pacman', '-S', '--needed', '--noconfirm',
                    'webkit2gtk-4.1', 'base-devel', 'curl', 'wget',
                    'file', 'openssl', 'appmenu-gtk-module',
                    'libappindicator-gtk3', 'librsvg']
-        elif any(name in self.pretty_name for name in ["Ubuntu", "Debian", "Pop!_OS", "Linux Mint", "Kali GNU/Linux Rolling"]):
+        elif any(name in self.pretty_name for name in ["Ubuntu", "Debian"]):
             log_func("Detected Debian-based OS")
             subprocess.run(['apt', 'update'], capture_output=True)
             cmd = ['apt', 'install', '-y',
                    'libwebkit2gtk-4.1-dev', 'build-essential', 'curl', 'wget', 'file',
                    'libxdo-dev', 'libssl-dev', 'libayatana-appindicator3-dev', 'librsvg2-dev']
-        elif any(name in self.pretty_name for name in ["Fedora", "Bazzite 42 (FROM Fedora Silverblue)"]):
-            log_func("Detected Fedora based OS")
+        elif "Fedora" in self.pretty_name:
+            log_func("Detected Fedora")
             cmd = ['dnf', 'install', '-y',
                    'webkit2gtk4.1-devel', 'openssl-devel', 'curl', 'wget', 'file',
                    'libappindicator-gtk3-devel', 'librsvg2-devel']
-        elif "Gentoo" in self.pretty_name:
-            log_func("Detected Gentoo")
-            cmd = ['emerge', '--ask=n',
-                   'net-libs/webkit-gtk:4.1', 'dev-libs/libappindicator',
-                   'net-misc/curl', 'net-misc/wget', 'sys-apps/file']
         elif "openSUSE" in self.pretty_name:
             log_func("Detected openSUSE")
             cmd = ['zypper', 'in', '-y',
                    'webkit2gtk3-devel', 'libopenssl-devel', 'curl', 'wget', 'file',
                    'libappindicator3-1', 'librsvg-devel']
-        elif "Alpine" in self.pretty_name:
-            log_func("Detected Alpine")
-            cmd = ['apk', 'add',
-                   'build-base', 'webkit2gtk', 'curl', 'wget', 'file',
-                   'openssl', 'libayatana-appindicator-dev', 'librsvg']
         else:
-            raise Exception(f"Unsupported distribution: {self.pretty_name}")
+            log_func("Using generic package installation")
+            # Try to detect package manager
+            if shutil.which('apt'):
+                subprocess.run(['apt', 'update'], capture_output=True)
+                cmd = ['apt', 'install', '-y', 'curl', 'wget', 'file']
+            elif shutil.which('dnf'):
+                cmd = ['dnf', 'install', '-y', 'curl', 'wget', 'file']
+            elif shutil.which('zypper'):
+                cmd = ['zypper', 'in', '-y', 'curl', 'wget', 'file']
+            elif shutil.which('pacman'):
+                cmd = ['pacman', '-S', '--needed', '--noconfirm', 'curl', 'wget', 'file']
+            else:
+                raise Exception("No supported package manager found")
         
         log_func(f"Running: {' '.join(cmd)}")
         self.logger.info(f"Running command: {' '.join(cmd)}")
