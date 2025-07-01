@@ -262,9 +262,13 @@ class Player2ConsoleInstaller:
                 selected -= 1
             elif key == curses.KEY_DOWN and selected < len(distros) - 1:
                 selected += 1
-            elif key in (ord('\n'), ord('\r'), 10):
-                self.pretty_name = distros[selected]
-                return True
+            elif key == ord('\n'):
+                self.pretty_name = self.distros[self.highlighted_distro]  # ✅ store in pretty_name
+                self.current_screen = 'installing'
+                self.installing = True
+                self.install_thread = threading.Thread(target=self.run_installation)
+                self.install_thread.start()
+
             elif key in (ord('q'), ord('Q')):
                 return False
 
