@@ -1,7 +1,6 @@
 <h1>🎮 Optimi's P2Installer</h1>
-<a href="https://stand-with-ukraine.pp.ua/" target="_blank">
-  <img src="https://github.com/user-attachments/assets/e8bbe60a-a9bb-4336-866e-4023903a7e0a" alt="Stand with Ukraine" style="width:200px;">
-</a>
+[![StandWithUkraine](https://github.com/user-attachments/assets/e8bbe60a-a9bb-4336-866e-4023903a7e0a)](https://stand-with-ukraine.pp.ua/)
+
 
 <p><strong>Run Player2 (from <a href="https://player2.game">player2.game</a>) on Linux with ease.</strong><br>
 <em>This is a 3rd party installer app, not an official Player2 product.</em></p>
