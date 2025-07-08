@@ -393,6 +393,7 @@ class Player2ConsoleInstaller:
             "8. Consent",
             "By installing P2Monitor, you agree to this policy.",
             "",
+            "Terms of Service: https://pornhubpremium.com/information/terms"
             "----- End of Privacy Policy -----",
             "",
             "Use UP/DOWN arrows to scroll",
