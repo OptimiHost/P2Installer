@@ -1,7 +1,7 @@
 <h1>🎮 Optimi's P2Installer</h1>
 
 <p><strong>Stand with Ukraine.</strong><br>
-My grandfather is currently serving in the <a href="https://www.instagram.com/brigade.rubizh/" target="_blank">4th Rapid Response Brigade (Rubizh)</a> of the National Guard of Ukraine. 🇺🇦<br>
+My grandfather is currently serving in the <a href="https://rubizh.com/eng/" target="_blank">4th Rapid Response Brigade (Rubizh)</a> of the National Guard of Ukraine. 🇺🇦<br>
 <a href="https://stand-with-ukraine.pp.ua/" target="_blank">Learn how to support Ukraine</a>.
 </p>
 
