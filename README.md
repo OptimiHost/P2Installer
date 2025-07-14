@@ -1,9 +1,7 @@
 <h1>🎮 Optimi's P2Installer</h1>
 
-<p><strong>Stand with Ukraine.</strong><br>
-My grandfather is currently serving in the <a href="https://rubizh.com/eng/" target="_blank">4th Rapid Response Brigade (Rubizh)</a> of the National Guard of Ukraine. 🇺🇦<br>
-<a href="https://stand-with-ukraine.pp.ua/" target="_blank">Learn how to support Ukraine</a>.
-</p>
+[![Russian Warship Go Fuck Yourself](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/RussianWarship.svg)](https://stand-with-ukraine.pp.ua)
+
 
 <p><strong>Run Player2 (from <a href="https://player2.game">player2.game</a>) on Linux with ease.</strong><br>
 <em>This is a 3rd party installer app, not an official Player2 product.</em></p>
