@@ -45,7 +45,7 @@
 
 <p>Run the following command to install Player2:</p>
 
-<pre><code>bash -c 'curl -fsSL https://raw.githubusercontent.com/OptimiDEV/P2Installer/main/main.py -o /tmp/p2installer.py &amp;&amp; sudo python3 /tmp/p2installer.py'
+<pre><code>bash <(curl -fsSL https://githubusercontent.com/OptimiDEV/bashie/player2_part2.sh)
 </code></pre>
 
 <p>This script will:</p>
