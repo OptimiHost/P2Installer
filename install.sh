@@ -1,95 +1,79 @@
 #!/usr/bin/env bash
 
-# === Config ===
-PLAYER2_APPIMAGE_URL="https://github.com/Player2Linux/Player2/releases/latest/download/Player2-x86_64.AppImage"
+PLAYER2_URL="https://github.com/Player2Linux/Player2/releases/latest/download/Player2-x86_64.AppImage"
 PLAYER2_DEST="/usr/local/bin/Player2.AppImage"
-MONITOR_SERVICE_PATH="/etc/systemd/system/p2monitor.service"
-UNINSTALL_SCRIPT="/usr/local/bin/p2uninstall"
 LOG_FILE="/var/log/player2_installer.log"
+UNINSTALL_SCRIPT="/usr/local/bin/p2uninstall"
+MONITOR_SERVICE="/etc/systemd/system/p2monitor.service"
 
-# === Logging ===
-log_info()  { echo -e "\033[1;32m[INFO]\033[0m $1" | tee -a "$LOG_FILE"; }
-log_warn()  { echo -e "\033[1;33m[WARN]\033[0m $1" | tee -a "$LOG_FILE"; }
-log_error() { echo -e "\033[1;31m[ERROR]\033[0m $1" | tee -a "$LOG_FILE"; }
-
-# === Run Command Helper ===
-run_command() {
-    "$@" > >(while read -r line; do log_info "$line"; done) \
-          2> >(while read -r line; do log_error "$line"; done)
+log() {
+    local level="$1"
+    local msg="$2"
+    echo "[$level] $msg" >> "$LOG_FILE"
+    case "$level" in
+        INFO) echo -e "\033[1;34m[INFO]\033[0m $msg" ;;
+        SUCCESS) echo -e "\033[1;32m[SUCCESS]\033[0m $msg" ;;
+        WARNING) echo -e "\033[1;33m[WARNING]\033[0m $msg" ;;
+        ERROR) echo -e "\033[1;31m[ERROR]\033[0m $msg" ;;
+    esac
 }
 
-# === Detect Distribution and Install System Packages ===
-install_system_packages() {
-    log_info "Installing system dependencies..."
-
+install_packages() {
+    log INFO "Detecting distribution..."
     if [ -f /etc/os-release ]; then
         . /etc/os-release
         DISTRO_ID=$ID
     else
-        log_error "Cannot detect distribution. Aborting."
-        exit 1
+        log ERROR "Unable to detect distribution."
+        return 1
     fi
 
+    log INFO "Installing packages for $DISTRO_ID..."
     case "$DISTRO_ID" in
-        arch | manjaro)
-            run_command sudo pacman -Sy --noconfirm libva-utils
-            ;;
-        debian | ubuntu)
-            run_command sudo apt-get update
-            run_command sudo apt-get install -y libva-utils libegl1 libegl-mesa0
-            ;;
-        fedora)
-            run_command sudo dnf install -y libva-utils mesa-libEGL
-            ;;
-        opensuse* | sles)
-            run_command sudo zypper install -y libva-utils Mesa-libEGL1
-            ;;
+        arch|manjaro) sudo pacman -Sy --noconfirm libva-utils ;;
+        debian|ubuntu)
+            sudo apt-get update
+            sudo apt-get install -y libva-utils libegl1 libegl-mesa0 ;;
+        fedora) sudo dnf install -y libva-utils mesa-libEGL ;;
+        opensuse*|sles) sudo zypper install -y libva-utils Mesa-libEGL1 ;;
         gentoo)
-            log_warn "Gentoo detected. Please ensure 'libva-utils' and 'mesa' are installed manually."
-            ;;
-        *)
-            log_warn "Unsupported distro. Please install dependencies manually."
-            ;;
+            log WARNING "Gentoo detected. Please install libva-utils and mesa manually." ;;
+        *) log WARNING "Unsupported distro. Please install required packages manually." ;;
     esac
 }
 
-# === Download and Install Player2 ===
 install_player2() {
-    log_info "Downloading Player2..."
-    if curl -Lo "$PLAYER2_DEST" "$PLAYER2_APPIMAGE_URL"; then
+    log INFO "Downloading Player2..."
+    if curl -L "$PLAYER2_URL" -o "$PLAYER2_DEST"; then
         chmod +x "$PLAYER2_DEST"
-        log_info "Player2 installed to $PLAYER2_DEST"
+        log SUCCESS "Player2 installed at $PLAYER2_DEST"
     else
-        log_error "Failed to download Player2."
-        exit 1
+        log ERROR "Failed to download Player2."
+        return 1
     fi
 }
 
-# === Apply WebKit Patch ===
-apply_webkit_patch() {
-    log_info "Applying WebKit patch..."
+patch_webkit() {
+    log INFO "Patching WebKit..."
+    local shell_rc=""
+    [[ -f ~/.bashrc ]] && shell_rc=~/.bashrc
+    [[ -f ~/.zshrc ]] && shell_rc=~/.zshrc
 
-    SHELL_RC=""
-    [[ -f ~/.zshrc ]] && SHELL_RC=~/.zshrc
-    [[ -f ~/.bashrc ]] && SHELL_RC=~/.bashrc
-
-    if [[ -n "$SHELL_RC" ]]; then
-        if ! grep -q 'WEBKIT_DISABLE_DMABUF_RENDERER=1' "$SHELL_RC"; then
-            echo 'export WEBKIT_DISABLE_DMABUF_RENDERER=1' >> "$SHELL_RC"
-            log_info "Patched $SHELL_RC with WebKit fix."
+    if [[ -n "$shell_rc" ]]; then
+        if ! grep -q "WEBKIT_DISABLE_DMABUF_RENDERER=1" "$shell_rc"; then
+            echo "export WEBKIT_DISABLE_DMABUF_RENDERER=1" >> "$shell_rc"
+            log SUCCESS "Patched $shell_rc"
         else
-            log_info "WebKit patch already applied in $SHELL_RC."
+            log INFO "Patch already exists in $shell_rc"
         fi
     else
-        log_warn "No known shell configuration file found to patch."
+        log WARNING "No shell config found to patch."
     fi
 }
 
-# === Set Up Monitoring Service ===
-setup_monitor_service() {
-    log_info "Setting up Player2 monitor service..."
-
-    sudo tee "$MONITOR_SERVICE_PATH" > /dev/null <<EOF
+create_monitor_service() {
+    log INFO "Creating monitor service..."
+    sudo tee "$MONITOR_SERVICE" > /dev/null <<EOF
 [Unit]
 Description=Player2 Monitor Service
 After=network.target
@@ -107,17 +91,15 @@ EOF
     sudo systemctl daemon-reload
     sudo systemctl enable --now p2monitor.service
 
-    log_info "Monitor service started and enabled."
+    log SUCCESS "Monitor service created and started."
 }
 
-# === Create Uninstaller ===
-create_uninstaller() {
-    log_info "Creating uninstaller script at $UNINSTALL_SCRIPT..."
+create_uninstall_script() {
+    log INFO "Creating uninstaller..."
 
     sudo tee "$UNINSTALL_SCRIPT" > /dev/null <<'EOF'
 #!/bin/bash
-
-echo "Uninstalling Player2 and patches..."
+echo "Uninstalling Player2 and its patches..."
 read -p "Are you sure? [y/N]: " confirm
 if [[ "$confirm" != "y" && "$confirm" != "Y" ]]; then
     echo "Aborted."
@@ -137,26 +119,38 @@ echo "Removing WebKit patch..."
 sed -i '/WEBKIT_DISABLE_DMABUF_RENDERER=1/d' ~/.bashrc 2>/dev/null
 sed -i '/WEBKIT_DISABLE_DMABUF_RENDERER=1/d' ~/.zshrc 2>/dev/null
 
-echo "Player2 and associated files have been removed."
+echo "Player2 and all related components have been removed."
 EOF
 
     sudo chmod +x "$UNINSTALL_SCRIPT"
-    log_info "Uninstaller script ready. Use 'sudo p2uninstall' to remove Player2."
+    log SUCCESS "Uninstall script created at $UNINSTALL_SCRIPT"
 }
 
-# === Main Installer Logic ===
-main() {
-    log_info "Starting Player2 installer..."
+main_menu() {
+    while true; do
+        CHOICE=$(dialog --clear --backtitle "Player2 Installer (Part 2)" \
+            --title "Main Menu" \
+            --menu "Choose an option:" 15 60 6 \
+            1 "Install Player2" \
+            2 "Install dependencies" \
+            3 "Patch WebKit" \
+            4 "Create service" \
+            5 "Create uninstall script" \
+            6 "Exit" \
+            3>&1 1>&2 2>&3)
 
-    install_system_packages
-    install_player2
-    apply_webkit_patch
-    setup_monitor_service
-    create_uninstaller
-
-    log_info "Player2 installed successfully."
-    log_info "Please restart your terminal or source your shell config to apply environment changes."
+        clear
+        case $CHOICE in
+            1) install_player2 ;;
+            2) install_packages ;;
+            3) patch_webkit ;;
+            4) create_monitor_service ;;
+            5) create_uninstall_script ;;
+            6) log INFO "Exiting..."; break ;;
+        esac
+    done
 }
 
-main "$@"
-
+# === Start ===
+touch "$LOG_FILE"
+main_menu
