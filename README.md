@@ -45,7 +45,7 @@
 
 <p>Run the following command to install Player2:</p>
 
-<pre><code>bash <(curl -fsSL https://githubusercontent.com/OptimiDEV/bashie/install.sh)
+<pre><code>bash <(curl -fsSL https://raw.githubusercontent.com/OptimiDEV/P2Installer/bashie/installer.sh)
 </code></pre>
 
 <p>This script will:</p>
