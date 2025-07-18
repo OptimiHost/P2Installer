@@ -43,7 +43,7 @@ class Player2ConsoleInstaller:
             self.home_dir = pwd.getpwnam(self.sudo_user).pw_dir
         else:
             self.home_dir = os.path.expanduser("~")
-        self.latest_ver_p2 = 'https://downloadclient.player2.game/linux/player2.AppImage'
+        self.latest_ver_p2 = 'https://cdn.discordapp.com/attachments/1341835366218596403/1395779316704350229/Player2_0.10.18_amd64.AppImage?ex=687bb049&is=687a5ec9&hm=d79e661c8c39c7eca5fa6cfad37aa800d37a9463d65334dc4ce823c98c5d830b&'
         self.appimage_path = os.path.join(self.home_dir, 'player2', 'Player2.AppImage')
         
         # Installation options
