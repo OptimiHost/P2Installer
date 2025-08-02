@@ -77,7 +77,41 @@ class Player2ConsoleInstaller:
 
     def check_sudo(self):
         return os.geteuid() == 0
-    
+        
+    def create_desktop_entry(self, log_func):
+    """Create a .desktop entry for the AppImage"""
+    try:
+        desktop_file_dir = os.path.join(self.home_dir, ".local", "share", "applications")
+        os.makedirs(desktop_file_dir, exist_ok=True)
+
+        desktop_file_path = os.path.join(desktop_file_dir, "player2.desktop")
+
+        icon_path = os.path.join(self.home_dir, "player2", "player2-icon.png")
+        if not os.path.exists(icon_path):
+            # Optional: download an icon
+            icon_url = "https://cdn.optimihost.com/player2-icon.png"
+            subprocess.run(["curl", "-L", "-o", icon_path, icon_url], capture_output=True)
+
+        entry = f"""[Desktop Entry]
+Name=Player2
+Comment=Player2 Linux Client
+Exec={self.appimage_path}
+Icon={icon_path if os.path.exists(icon_path) else 'application-x-executable'}
+Terminal=false
+Type=Application
+Categories=Game;Utility;
+"""
+
+        with open(desktop_file_path, "w") as f:
+            f.write(entry)
+
+        os.chmod(desktop_file_path, 0o755)
+
+        log_func("Created desktop entry for Player2", 3)
+    except Exception as e:
+        log_func(f"Failed to create desktop entry: {e}", 4)
+        self.logger.error(f"Desktop entry creation failed: {e}")
+
     def main(self, stdscr):
         self.stdscr = stdscr
         curses.curs_set(0)  # Hide cursor
@@ -656,6 +690,9 @@ class Player2ConsoleInstaller:
             msg = "Player2 AppImage downloaded and installed successfully"
             self.logger.info(msg)
             log_func(msg, 3)
+            # Create desktop entry
+            self.create_desktop_entry(log_func)
+
             
         except Exception as e:
             self.logger.error(f"Download failed: {str(e)}")
