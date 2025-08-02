@@ -108,9 +108,9 @@ class Player2ConsoleInstaller:
             os.chmod(desktop_file_path, 0o755)
             log_func("Created desktop entry for Player2", 3)
 
-    except Exception as e:
-        log_func(f"Failed to create desktop entry: {e}", 4)
-        self.logger.error(f"Desktop entry creation failed: {e}")
+        except Exception as e:
+            log_func(f"Failed to create desktop entry: {e}", 4)
+            self.logger.error(f"Desktop entry creation failed: {e}")
 
     def main(self, stdscr):
         self.stdscr = stdscr
