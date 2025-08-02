@@ -79,15 +79,16 @@ class Player2ConsoleInstaller:
         return os.geteuid() == 0
         
     def create_desktop_entry(self, log_func):
+        desktop_file_dir = os.path.join(self.home_dir, ".local", "share", "applications")
+        os.makedirs(desktop_file_dir, exist_ok=True)
+    
+        desktop_file_path = os.path.join(desktop_file_dir, "player2.desktop")
+    
+        icon_path = os.path.join(self.home_dir, "player2", "player2-icon.png")
+    
         try:
-            desktop_file_dir = os.path.join(self.home_dir, ".local", "share", "applications")
-            os.makedirs(desktop_file_dir, exist_ok=True)
-    
-            desktop_file_path = os.path.join(desktop_file_dir, "player2.desktop")
-    
-            icon_path = os.path.join(self.home_dir, "player2", "player2-icon.png")
+            # Optional: download an icon
             if not os.path.exists(icon_path):
-                # Optional: download an icon
                 icon_url = "https://cdn.optimihost.com/player2-icon.png"
                 subprocess.run(["curl", "-L", "-o", icon_path, icon_url], capture_output=True)
     
@@ -100,13 +101,13 @@ class Player2ConsoleInstaller:
     Type=Application
     Categories=Game;Utility;
     """
+    
+            with open(desktop_file_path, "w") as f:
+                f.write(entry)
+    
+            os.chmod(desktop_file_path, 0o755)
+            log_func("Created desktop entry for Player2", 3)
 
-        with open(desktop_file_path, "w") as f:
-            f.write(entry)
-
-        os.chmod(desktop_file_path, 0o755)
-
-        log_func("Created desktop entry for Player2", 3)
     except Exception as e:
         log_func(f"Failed to create desktop entry: {e}", 4)
         self.logger.error(f"Desktop entry creation failed: {e}")
