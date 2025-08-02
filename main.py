@@ -93,14 +93,14 @@ class Player2ConsoleInstaller:
                 subprocess.run(["curl", "-L", "-o", icon_path, icon_url], capture_output=True)
     
             entry = f"""[Desktop Entry]
-    Name=Player2
-    Comment=Player2 Linux Client
-    Exec={self.appimage_path}
-    Icon={icon_path if os.path.exists(icon_path) else 'application-x-executable'}
-    Terminal=false
-    Type=Application
-    Categories=Game;Utility;
-    """
+Name=Player2
+Comment=Player2 Linux Client
+Exec={self.appimage_path}
+Icon={icon_path if os.path.exists(icon_path) else 'application-x-executable'}
+Terminal=false
+Type=Application
+Categories=Game;Utility;
+"""
     
             with open(desktop_file_path, "w") as f:
                 f.write(entry)
