@@ -617,7 +617,7 @@ Categories=Game;Utility;
             log_func("Detected Fedora")
             cmd = ['dnf', 'install', '-y',
                    'webkit2gtk4.1-devel', 'openssl-devel', 'curl', 'wget', 'file',
-                   'libappindicator-gtk3-devel', 'librsvg2-devel']
+                   'libappindicator-gtk3-devel', 'librsvg2-devel', 'mesa-libGL', 'mesa-libEGL', 'mesa-vulkan-drivers']
         elif "openSUSE" in self.pretty_name:
             log_func("Detected openSUSE")
             cmd = ['zypper', 'in', '-y',
