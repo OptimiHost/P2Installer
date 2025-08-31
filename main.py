@@ -29,7 +29,8 @@ class Player2ConsoleInstaller:
             print("Please run: bash -c 'curl -fsSL https://raw.githubusercontent.com/OptimiDEV/P2Installer/main/main.py -o /tmp/p2installer.py && sudo python3 /tmp/p2installer.py'")
             sys.exit(1)
 
-        # Initialize distro list - this was missing proper initialization
+        # Initialize distro list - this was missing proper initialization.
+        # Gabriel here; the code does not fucking work here. Alex, please, fix it, for the love of God. It just defaults to self.pretty_name. 
         self.distros = [
             "Arch Linux / Manjaro",
             "Debian / Ubuntu", 
