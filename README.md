@@ -1,3 +1,8 @@
+<h1>NOTICE</h1>
+This project is currently sunsetted. Maintaining and updating it became too difficult to manage.
+I might release a second version in the future, but it won’t be anytime soon.
+
+Thank you to everyone who has supported this project! Your encouragement means a lot.
 <h1>🎮 Optimi's P2Installer</h1>
 
 [![Russian Warship Go Fuck Yourself](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/RussianWarship.svg)](https://stand-with-ukraine.pp.ua)
